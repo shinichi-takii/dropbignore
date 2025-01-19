@@ -1,0 +1,11 @@
+[project]
+name = "dropbignore"
+version = "0.1.1"
+description = "Set to ignore Dropbox folders"
+authors = [{name = "Shinichi Takii", email = "shinichi.takii@shaketh.com"}]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "xattr>=1.1.4",
+]
