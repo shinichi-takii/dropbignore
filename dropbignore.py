@@ -27,9 +27,7 @@ class DropboxIgnore():
         - Supported object type: Directory only (File is not support)
     """
 
-    # ロギング レベル
-    #   NOTE: リリース前に INFO に変更すること
-    # _LOG_LEVEL = logging.DEBUG
+    # ロギング レベル (DEBUG|INFO)
     _LOG_LEVEL = logging.INFO
 
     # ignore ファイル名
@@ -93,7 +91,7 @@ class DropboxIgnore():
         """
 
         if not self._ignore_file_path.exists():
-            self._logger.error(f"'{self._IGNORE_FILE_NAME}' ファイルが見つかりませんでした。")
+            self._logger.error(f"ignore file does not exist : '{self._IGNORE_FILE_NAME}'")
 
         ignore_pattern_text = self._ignore_file_path.read_text()
         ignore_patterns_base = ignore_pattern_text.split("\n")
@@ -113,7 +111,7 @@ class DropboxIgnore():
 
 
         if len(ignore_patterns) < 1:
-            self._logger.error(f"'{self._IGNORE_FILE_NAME}' ファイルに有効なパターンが存在しません。")
+            self._logger.error(f"No valid patterns exist in ignore file : '{self._IGNORE_FILE_NAME}'")
 
         # パターン リスト 重複排除
         self._ignore_patterns = set(ignore_patterns + self._ABSOLUTE_IGNORE_PETTERNS)
@@ -153,6 +151,10 @@ class DropboxIgnore():
         serach_path = self._dropbox_path / '**'
 
         for subdir in glob.iglob(f"{serach_path}/", recursive=_IS_RECURSIVE):
+
+            # 除外済みディレクトリ配下のパスは、スキップする
+            if subdir.startswith(tuple(self._ignored_paths)):
+                continue
 
             if self._IGNORE_XATTR_KEY in xattr.listxattr(subdir):
                 # Dropbox 同期除外 属性あり

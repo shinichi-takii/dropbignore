@@ -37,7 +37,8 @@
 ## Requirement
 
 1. macOS
-2. Python >= 3.9
+2. Python >= 3.12
+3. [uv package manager](https://github.com/astral-sh/uv)
 
 
 ## Installation
